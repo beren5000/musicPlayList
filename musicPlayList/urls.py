@@ -18,5 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^API/v1/playlist/', include('applications.playList.urls')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
