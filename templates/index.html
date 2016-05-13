@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% block title %}Music Playlist{% endblock %}
+{% block content %}
+<div class="container">
+
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="username" id="inputUsername" class="form-control" placeholder="Username" required="" autofocus="">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+        <button id="logInSubmit" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        var token = "";
+        var logIn = function(user, pass){
+            $.ajax({
+                type: "POST",
+                url: "API/v1/api-token-auth/",
+                data: {
+                    username: user,
+                    password: pass
+                },
+                success: function(data) {
+                    console.log(data);
+                    token=data.token;
+                    getPlayLists();
+                },
+                error: function(data){
+                    console.log(data);
+                }
+            });
+        };
+
+        var getPlayLists = function(){
+            $.ajax({
+                type: "GET",
+                headers: {
+                    'Authorization': 'JWT '+ token
+                },
+                url: "API/v1/playlist/playlists/",
+                success: function(data) {
+                    console.log(data);
+                },
+                error: function(data){
+                    console.log(data);
+                }
+            });
+        };
+
+        var getSongs = function(){
+            $.ajax({
+                type: "GET",
+                headers: {
+                    'Authorization': 'JWT '+ token
+                },
+                url: "API/v1/playlist/songs/",
+                success: function(data) {
+                    console.log(data);
+                },
+                error: function(data){
+                    console.log(data);
+                }
+            });
+        };
+
+    $(document).ready(function () {
+        getSongs();
+        $('#logInSubmit').on('click', function(event){
+            event.preventDefault();
+            logIn($("#inputUsername").val(), $("#inputPassword").val());
+        });
+    });
+    </script>
+{% endblock %}

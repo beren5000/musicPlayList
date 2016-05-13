@@ -1,0 +1,71 @@
+{% load i18n %}
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+	<!-- start: HEAD -->
+	<head>
+		<title>{% block title %}Music Playlist{% endblock %}</title>
+		<!-- start: META -->
+		<meta charset="utf-8" />
+
+		<!-- start: MAIN CSS -->
+        {% block css %}
+
+            <!-- Latest compiled and minified CSS -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+            <!-- Optional theme -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+            <link href="{% static 'css/main.css' %}" rel="stylesheet">
+
+        {% endblock %}
+
+	</head>
+	<!-- end: HEAD -->
+
+	<!-- start: BODY -->
+	<body >
+		<!-- start: HEADER -->
+            {% block header %}
+
+            {% endblock %}
+		<!-- end: HEADER -->
+		<!-- start: MAIN CONTAINER -->
+
+            <!-- start: NAVIGATION BAR -->
+                {% block navbar %}
+
+                {% endblock %}
+            <!-- end: NAVIGATION BAR -->
+
+            <!-- start: PAGE -->
+                {% block content %}
+
+                {% endblock %}
+            <!-- end: PAGE -->
+
+        <!-- end: MAIN CONTAINER -->
+
+        <!-- start: FOOTER -->
+            {% block footer %}
+
+            {% endblock %}
+		<!-- end: FOOTER -->
+
+		<!-- start: MAIN JAVASCRIPTS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        {% block js %}
+            <!-- Latest compiled and minified JavaScript -->
+		{% endblock %}
+	    <!-- end: MAIN JAVASCRIPTS -->
+
+		<!-- start: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
+
+	    <!-- end: JAVASCRIPTS REQUIRED FOR THIS PAGE ONLY -->
+	</body>
+	<!-- end: BODY -->
+</html>
