@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from rest_framework_jwt.views import obtain_jwt_token
 
-from musicPlayList import settings
+from django.conf import settings
 
 try:
     from rol import settings_name
