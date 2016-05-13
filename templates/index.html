@@ -64,9 +64,11 @@
                 url: "API/v1/playlist/songs/",
                 success: function(data) {
                     console.log(data);
+                    return data;
                 },
                 error: function(data){
                     console.log(data);
+                    return 0;
                 }
             });
         };
