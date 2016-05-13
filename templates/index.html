@@ -58,9 +58,6 @@
         var getSongs = function(){
             $.ajax({
                 type: "GET",
-                headers: {
-                    'Authorization': 'JWT '+ token
-                },
                 url: "API/v1/playlist/songs/",
                 success: function(data) {
                     console.log(data);

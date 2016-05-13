@@ -20,7 +20,10 @@ from rest_framework_jwt.views import obtain_jwt_token
 
 from musicPlayList import settings
 
-from rol import settings_name
+try:
+    from rol import settings_name
+except ImportError:
+    settings_name = "settings"
 
 urlpatterns = [
     url(r'^$', TemplateView.as_view(template_name='index.html'), name="index"),
@@ -28,6 +31,7 @@ urlpatterns = [
     url(r'^API/v1/playlist/', include('applications.playList.urls')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^API/v1/api-token-auth/', obtain_jwt_token),
+    url(r'^accounts/', include('allauth.urls')),
 
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT, }),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, }),

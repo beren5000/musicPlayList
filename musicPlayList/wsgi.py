@@ -17,7 +17,6 @@ except ImportError:
     settings_name = "settings"
 
 settings_var = "musicPlayList."+settings_name
-print settings_var
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_var)
 

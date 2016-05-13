@@ -1,4 +1,4 @@
-from settings import *
+from musicPlayList.settings import *
 
 DATABASES = {
    'default': {
