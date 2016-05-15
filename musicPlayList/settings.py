@@ -222,3 +222,5 @@ EMAIL_HOST_PASSWORD = 'Adamantio123'
 DEFAULT_FROM_EMAIL = 'musicPlayList@beren5000.webfactional.com'
 SERVER_EMAIL = 'musicPlayList@beren5000.webfactional.com'
 CONTACT_FORM = 'musicPlayList@beren5000.webfactional.com'
+
+LOGIN_REDIRECT_URL = "/"
