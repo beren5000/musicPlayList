@@ -214,3 +214,11 @@ SOCIALACCOUNT_PROVIDERS = {
         'VERSION': 'v2.4'
     }
 }
+
+
+EMAIL_HOST = 'smtp.webfaction.com'
+EMAIL_HOST_USER = 'beren5000'
+EMAIL_HOST_PASSWORD = 'Adamantio123'
+DEFAULT_FROM_EMAIL = 'musicPlayList@beren5000.webfactional.com'
+SERVER_EMAIL = 'musicPlayList@beren5000.webfactional.com'
+CONTACT_FORM = 'musicPlayList@beren5000.webfactional.com'
