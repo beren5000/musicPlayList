@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import jwt
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import authentication_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
@@ -21,18 +22,24 @@ class SongsApiView(APIView):
         return Response(serializer.data)
 
 
-@authentication_classes([JSONWebTokenAuthentication,])
+@authentication_classes([JSONWebTokenAuthentication,  SessionAuthentication])
 class PlaylistApiView(APIView):
     """
     List all Songs, or create a new Song.
     """
     def get(self, request, format=None, pk=None):
-        try:
-            token = request.META['HTTP_AUTHORIZATION'][3:]
-            decode = jwt_decode_handler(token)
-            user_id = decode['user_id']
-        except KeyError:
-            return Response({"detail":"Authorization Token not provided"}, status=401)
+        if request.user.is_authenticated():
+            user_id = request.user.pk
+        else:
+            try:
+                token = request.META['HTTP_AUTHORIZATION'][3:]
+                decode = jwt_decode_handler(token)
+                user_id = decode['user_id']
+            except KeyError:
+                return Response({"detail":"Authorization Token not provided or user Not Authenticated"}, status=401)
         playlists = PlayLists.objects.filter(user__pk=user_id)
         serializer = PlaylistSerializer(playlists, many=True)
         return Response(serializer.data)
+
+    def post(self, request, format=None, pk=None):
+        pass

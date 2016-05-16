@@ -3,16 +3,50 @@
 {% load staticfiles %}
 {% block title %}Music Playlist{% endblock %}
 {% block content %}
-<div class="container">
-
-      <form class="form-signin">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="username" id="inputUsername" class="form-control" placeholder="Username" required="" autofocus="">
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
-        <button id="logInSubmit" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      </form>
+    <div class="container">
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>pk</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Song</th>
+                </tr>
+            </thead>
+            <tbody id="songsContent">
+                <tr>
+                    <td>No Songs Uploaded</td>
+                </tr>
+            </tbody>
+        </table>
+        {% if user.is_authenticated %}
+            <h2 class="form-signin-heading">My Playlists</h2>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>pk</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Song</th>
+                    </tr>
+                </thead>
+                <tbody id="songsContent">
+                    <tr>
+                        <td>No Songs Uploaded</td>
+                    </tr>
+                </tbody>
+            </table>
+        {% else %}
+            <form id="formSignIn" class="form-signin">
+                <h2 class="form-signin-heading">Please sign in</h2>
+                <p id="formErrors" class="bg-danger hidden"></p>
+                <label for="inputEmail" class="sr-only">Email address</label>
+                <input type="username" id="inputUsername" class="form-control" placeholder="Username" required="" autofocus="">
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+                <button id="logInSubmit" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            </form>
+        {% endif %}
 
     </div>
 {% endblock %}
@@ -35,6 +69,9 @@
                 },
                 error: function(data){
                     console.log(data);
+                    var resp = JSON.parse(data['responseText']);
+                    $("#formErrors").html(resp['non_field_errors']);
+                    $("#formErrors").removeClass( "hidden" ).addClass("show");
                 }
             });
         };
@@ -61,7 +98,7 @@
                 url: "API/v1/playlist/songs/",
                 success: function(data) {
                     console.log(data);
-                    return data;
+                    renderSongs(data) ;
                 },
                 error: function(data){
                     console.log(data);
@@ -69,13 +106,28 @@
                 }
             });
         };
+        
+        var renderSongs = function (songs) {
+            if(songs!=0 || songs.length > 0){
+                var htmlSongs = "";
+                for (var i = 0; i < songs.length; i++) {
+                    htmlSongs += "<tr>";
+                    htmlSongs += "<td>" + songs[i]['pk'] + "</td>";
+                    htmlSongs += "<td>" + songs[i]['name'] + "</td>";
+                    htmlSongs += "<td>" + songs[i]['description'] + "</td>";
+                    htmlSongs += "<td>" + songs[i]['song_file'] + "</td>";
+                    htmlSongs += "</td>";
+                }
+                $('#songsContent').html(htmlSongs);
+            }
+        };
 
-    $(document).ready(function () {
-        getSongs();
-        $('#logInSubmit').on('click', function(event){
-            event.preventDefault();
-            logIn($("#inputUsername").val(), $("#inputPassword").val());
+        $(document).ready(function () {
+            getSongs();
+            $('#logInSubmit').on('click', function(event){
+                event.preventDefault();
+                logIn($("#inputUsername").val(), $("#inputPassword").val());
+            });
         });
-    });
     </script>
 {% endblock %}
