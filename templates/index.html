@@ -38,7 +38,7 @@
             </table>
         {% else %}
             <form id="formSignIn" class="form-signin">
-                <h2 class="form-signin-heading">Please sign in</h2>
+                <h2 class="form-signin-heading">Please sign in to see your playlists</h2>
                 <p id="formErrors" class="bg-danger hidden"></p>
                 <label for="inputEmail" class="sr-only">Email address</label>
                 <input type="username" id="inputUsername" class="form-control" placeholder="Username" required="" autofocus="">
@@ -115,7 +115,7 @@
                     htmlSongs += "<td>" + songs[i]['pk'] + "</td>";
                     htmlSongs += "<td>" + songs[i]['name'] + "</td>";
                     htmlSongs += "<td>" + songs[i]['description'] + "</td>";
-                    htmlSongs += "<td>" + songs[i]['song_file'] + "</td>";
+                    htmlSongs += "<td><audio controls><source src='" + songs[i]['song_file'] + "' type='audio/mpeg'></audio></td>";
                     htmlSongs += "</td>";
                 }
                 $('#songsContent').html(htmlSongs);
