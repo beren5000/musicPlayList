@@ -6,6 +6,7 @@
 
 	<!-- start: HEAD -->
 	<head>
+        {% load socialaccount %}
 		<title>{% block title %}Music Playlist{% endblock %}</title>
 		<!-- start: META -->
 		<meta charset="utf-8" />
@@ -28,6 +29,7 @@
 
 	<!-- start: BODY -->
 	<body >
+        {% providers_media_js %}
 		<!-- start: HEADER -->
             {% block header %}
 

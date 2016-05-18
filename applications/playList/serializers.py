@@ -12,6 +12,7 @@ class SongSerializer(serializers.ModelSerializer):
         model = Song
         fields = ('pk', 'name', 'description', 'song_file')
 
+
 class PlaylistSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(many=False, read_only=True)
     songs = SongSerializer(many=True, read_only=True)

@@ -33,6 +33,8 @@ urlpatterns = [
     url(r'^API/v1/api-token-auth/', obtain_jwt_token),
     url(r'^accounts/', include('allauth.urls')),
 
+    url(r'^util/formcreateplaylist/', TemplateView.as_view(template_name='utils/_create_playlist_ajax.html'), name="util_form_create_playlist"),
+
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT, }),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT, }),
 ]

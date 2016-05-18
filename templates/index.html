@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load staticfiles %}
+{% load socialaccount %}
 {% block title %}Music Playlist{% endblock %}
 {% block content %}
     <div class="container">
-        <table class="table table-condensed">
+        <table id="songs" class="table table-condensed">
             <thead>
                 <tr>
                     <th>pk</th>
@@ -21,31 +22,21 @@
         </table>
         {% if user.is_authenticated %}
             <h2 class="form-signin-heading">My Playlists</h2>
-            <table class="table table-condensed">
-                <thead>
-                    <tr>
-                        <th>pk</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Song</th>
-                    </tr>
-                </thead>
-                <tbody id="songsContent">
-                    <tr>
-                        <td>No Songs Uploaded</td>
-                    </tr>
-                </tbody>
-            </table>
+            {% include 'utils/_create_playlist_ajax.html' %}
         {% else %}
-            <form id="formSignIn" class="form-signin">
-                <h2 class="form-signin-heading">Please sign in to see your playlists</h2>
-                <p id="formErrors" class="bg-danger hidden"></p>
-                <label for="inputEmail" class="sr-only">Email address</label>
-                <input type="username" id="inputUsername" class="form-control" placeholder="Username" required="" autofocus="">
-                <label for="inputPassword" class="sr-only">Password</label>
-                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
-                <button id="logInSubmit" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-            </form>
+            <div id="formsContainer">
+                <form id="formSignIn" class="form-signin">
+                    <h2 class="form-signin-heading">Please sign in to see your playlists</h2>
+                    <p id="formErrors" class="bg-danger hidden"></p>
+                    <label for="inputEmail" class="sr-only">Email address</label>
+                    <input type="username" id="inputUsername" class="form-control" placeholder="Username" required="" autofocus="">
+                    <label for="inputPassword" class="sr-only">Password</label>
+                    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+                    <button id="logInSubmit" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                </form>
+                <a href="{% provider_login_url "facebook" method="oauth2" %}">Facebook OAuth2</a>
+                <a href="{% provider_login_url "github" method="oauth2" %}">github OAuth2</a>
+            </div>
         {% endif %}
 
     </div>
@@ -54,6 +45,7 @@
 {% block js %}
     <script>
         var token = "";
+        var allsongs = [];
         var logIn = function(user, pass){
             $.ajax({
                 type: "POST",
@@ -66,6 +58,7 @@
                     console.log(data);
                     token=data.token;
                     getPlayLists();
+                    getFormCreatePlaylist();
                 },
                 error: function(data){
                     console.log(data);
@@ -76,9 +69,44 @@
             });
         };
 
+        var getFormCreatePlaylist = function () {
+            $.ajax({
+                type: "GET",
+                url: "util/formcreateplaylist/",
+                success: function(data) {
+                    console.log(data);
+                    $("#formsContainer").html(data);
+                    renderFormSongs(allsongs);
+
+                }
+            });
+        }
+
         var getPlayLists = function(){
             $.ajax({
                 type: "GET",
+                headers: {
+                    'Authorization': 'JWT '+ token
+                },
+                url: "API/v1/playlist/playlists/",
+                success: function(data) {
+                    console.log(data);
+                },
+                error: function(data){
+                    console.log(data);
+                }
+            });
+        };
+
+        var putPlayLists = function(){
+            var selectedSongs = [];
+            $.ajax({
+                type: "PUT",
+                data: {
+                    name: $('#playlistName').val(),
+                    description: $('#playlistDescription').val(),
+                    songs: [3,4,5]
+                },
                 headers: {
                     'Authorization': 'JWT '+ token
                 },
@@ -98,6 +126,7 @@
                 url: "API/v1/playlist/songs/",
                 success: function(data) {
                     console.log(data);
+                    allsongs = data;
                     renderSongs(data) ;
                 },
                 error: function(data){
@@ -112,7 +141,6 @@
                 var htmlSongs = "";
                 for (var i = 0; i < songs.length; i++) {
                     htmlSongs += "<tr>";
-                    htmlSongs += "<td>" + songs[i]['pk'] + "</td>";
                     htmlSongs += "<td>" + songs[i]['name'] + "</td>";
                     htmlSongs += "<td>" + songs[i]['description'] + "</td>";
                     htmlSongs += "<td><audio controls><source src='" + songs[i]['song_file'] + "' type='audio/mpeg'></audio></td>";
@@ -121,6 +149,23 @@
                 $('#songsContent').html(htmlSongs);
             }
         };
+
+        var renderFormSongs = function (songs) {
+            if(songs!=0 || songs.length > 0){
+                var htmlSongs = "";
+                for (var i = 0; i < songs.length; i++) {
+                    htmlSongs += "<tr>";
+                    htmlSongs += "<td><input type='checkbox' name='songs' value='" + songs[i]['pk'] + "'></td>";
+                    htmlSongs += "<td>" + songs[i]['name'] + "</td>";
+                    htmlSongs += "<td>" + songs[i]['description'] + "</td>";
+                    htmlSongs += "<td><audio controls><source src='" + songs[i]['song_file'] + "' type='audio/mpeg'></audio></td>";
+                    htmlSongs += "</td>";
+                }
+                $('#songsContentSelect').html(htmlSongs);
+            }
+        };
+
+
 
         $(document).ready(function () {
             getSongs();

@@ -15,6 +15,9 @@ class PlayLists(Master):
                                    verbose_name=_("songs"))
     is_private = models.BooleanField(default=False, blank=False, null=False, verbose_name=_("is_private"))
 
+    def __unicode__(self):
+        return str(self.pk) + ": " + self.user.username + " - " + self.name
+
     class Meta:
         verbose_name = _("playlist")
         verbose_name_plural = _("playlists")
@@ -31,6 +34,9 @@ def song_name(instance, filename):
 class Song(Master):
     name = models.CharField(max_length=50, blank=False, null=False, verbose_name=_("name"))
     song_file = models.FileField(blank=True, upload_to=song_name, verbose_name=_("song_file"))
+
+    def __unicode__(self):
+        return str(self.pk) + " - " + self.name
 
     class Meta:
         verbose_name = _("song")

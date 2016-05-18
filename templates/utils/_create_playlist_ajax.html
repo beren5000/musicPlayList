@@ -1,0 +1,24 @@
+<form id="createPlaylist" class="form-create">
+    <h2 class="form-signin-heading">Create Playlists</h2>
+    <p id="formErrors" class="bg-danger hidden"></p>
+    <label for="playlistName" class="sr-only">Playlist Name</label>
+    <input type="text" id="playlistName" class="form-control" placeholder="Name" required="" autofocus="">
+    <label for="playlistDescription" class="sr-only">Description</label>
+    <input type="text" id="playlistDescription" class="form-control" placeholder="Description" required="">
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>pk</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Song</th>
+            </tr>
+        </thead>
+        <tbody id="songsContentSelect">
+            <tr>
+                <td>No Songs Uploaded</td>
+            </tr>
+        </tbody>
+    </table>
+    <button id="createPlaylistSubmit" class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
+</form>
