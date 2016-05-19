@@ -22,7 +22,7 @@
         </table>
         {% if user.is_authenticated %}
             <h2 class="form-signin-heading">My Playlists</h2>
-            {% include 'utils/_create_playlist_ajax.html' %}
+
         {% else %}
             <div id="formsContainer">
                 <form id="formSignIn" class="form-signin">
@@ -77,7 +77,6 @@
                     console.log(data);
                     $("#formsContainer").html(data);
                     renderFormSongs(allsongs);
-
                 }
             });
         }
@@ -169,6 +168,9 @@
 
         $(document).ready(function () {
             getSongs();
+            {% if user.is_authenticated %}
+            getFormCreatePlaylist();
+            {% endif %}
             $('#logInSubmit').on('click', function(event){
                 event.preventDefault();
                 logIn($("#inputUsername").val(), $("#inputPassword").val());
