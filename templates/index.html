@@ -22,8 +22,23 @@
         </table>
         {% if user.is_authenticated %}
             <h2 class="form-signin-heading">My Playlists</h2>
+            <table id="songs" class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>pk</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Song</th>
+                    </tr>
+                </thead>
+                <tbody id="songsContent">
+                    <tr>
+                        <td>No Playlist Created</td>
+                    </tr>
+                </tbody>
+            </table>
             <div id="formsContainer">
-               
+
             </div>
 
         {% else %}
@@ -48,7 +63,6 @@
 {% block js %}
     <script>
         var token = "";
-        var allsongs = [];
         var logIn = function(user, pass){
             $.ajax({
                 type: "POST",
@@ -66,8 +80,9 @@
                 error: function(data){
                     console.log(data);
                     var resp = JSON.parse(data['responseText']);
-                    $("#formErrors").html(resp['non_field_errors']);
-                    $("#formErrors").removeClass( "hidden" ).addClass("show");
+                    var form_error = $("#formErrors");
+                    form_error.html(resp['non_field_errors']);
+                    form_error.removeClass( "hidden" ).addClass("show");
                 }
             });
         };
@@ -77,12 +92,15 @@
                 type: "GET",
                 url: "util/formcreateplaylist/",
                 success: function(data) {
-                    console.log(data);
                     $("#formsContainer").html(data);
-                    renderFormSongs(allsongs);
+                    getSongs();
+                    $('#createPlaylistSubmit').on('click', function(event){
+                        event.preventDefault();
+                        putPlayLists();
+                    });
                 }
             });
-        }
+        };
 
         var getPlayLists = function(){
             $.ajax({
@@ -101,13 +119,15 @@
         };
 
         var putPlayLists = function(){
-            var selectedSongs = [];
+            var selectedSongs = $('input:checkbox:checked.group1').map(function () {
+                return parseInt(this.value);
+            }).get();
             $.ajax({
                 type: "PUT",
                 data: {
                     name: $('#playlistName').val(),
                     description: $('#playlistDescription').val(),
-                    songs: [3,4,5]
+                    songs: selectedSongs
                 },
                 headers: {
                     'Authorization': 'JWT '+ token
@@ -130,6 +150,9 @@
                     console.log(data);
                     allsongs = data;
                     renderSongs(data) ;
+                    if ($('#createPlaylist').length > 0){
+                        renderFormSongs(data);
+                    }
                 },
                 error: function(data){
                     console.log(data);
@@ -145,7 +168,7 @@
                     htmlSongs += "<tr>";
                     htmlSongs += "<td>" + songs[i]['name'] + "</td>";
                     htmlSongs += "<td>" + songs[i]['description'] + "</td>";
-                    htmlSongs += "<td><audio controls><source src='" + songs[i]['song_file'] + "' type='audio/mpeg'></audio></td>";
+                    htmlSongs += "<td><a href='" + songs[i]['song_file'] + "'></td>";
                     htmlSongs += "</td>";
                 }
                 $('#songsContent').html(htmlSongs);
@@ -160,14 +183,16 @@
                     htmlSongs += "<td><input type='checkbox' name='songs' value='" + songs[i]['pk'] + "'></td>";
                     htmlSongs += "<td>" + songs[i]['name'] + "</td>";
                     htmlSongs += "<td>" + songs[i]['description'] + "</td>";
-                    htmlSongs += "<td><audio controls><source src='" + songs[i]['song_file'] + "' type='audio/mpeg'></audio></td>";
+                    htmlSongs += "<td><a href='" + songs[i]['song_file'] + "' ></td>";
                     htmlSongs += "</td>";
                 }
                 $('#songsContentSelect').html(htmlSongs);
             }
         };
 
-
+        var renderPlaylists = function (playlists) {
+            
+        };
 
         $(document).ready(function () {
             getSongs();
