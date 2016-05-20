@@ -5,13 +5,14 @@
 {% block title %}Music Playlist{% endblock %}
 {% block content %}
     <div class="container">
+        <h2 class="form-signin-heading">Available Songs</h2>
         <table id="songs" class="table table-condensed">
             <thead>
                 <tr>
-                    <th>pk</th>
                     <th>Name</th>
                     <th>Description</th>
                     <th>Song</th>
+                    <th>Stars</th>
                 </tr>
             </thead>
             <tbody id="songsContent">
@@ -170,11 +171,11 @@
                 var htmlSongs = "";
                 for (var i = 0; i < songs.length; i++) {
                     htmlSongs += "<tr>";
-                    htmlSongs += "<td>" + songs[i]['pk'] + "</td>";
                     htmlSongs += "<td>" + songs[i]['name'] + "</td>";
                     htmlSongs += "<td>" + songs[i]['description'] + "</td>";
                     //htmlSongs += "<td>" + songs[i]['song_file'] + "</td>";
                     htmlSongs += "<td><audio controls='controls' preload='none' src='" + songs[i]['song_file'] + "' >your browser doesn't support audio tags</audio></td>";
+                    htmlSongs += "<td>" + songs[i]['star_ranking'] + "</td>";
                     htmlSongs += "</tr>";
                 }
                 $('#songsContent').html(htmlSongs);
@@ -191,6 +192,7 @@
                     htmlSongs += "<td>" + songs[i]['description'] + "</td>";
                     //htmlSongs += "<td>" + songs[i]['song_file'] + "</td>";
                     htmlSongs += "<td><audio controls='controls' preload='none' src='" + songs[i]['song_file'] + "' >your browser doesn't support audio tags</audio></td>";
+                    htmlSongs += "<td>" + songs[i]['star_ranking'] + "</td>";
                     htmlSongs += "</tr>";
                 }
                 $('#songsContentSelect').html(htmlSongs);
@@ -207,14 +209,17 @@
                 htmlPlaylist += "<td colspan=4 style='text-align:center;font-weight:bold;'>Playlist Name: " + playlists[i]['description'] + "<td>";
                 htmlPlaylist += "</tr>";
                 htmlPlaylist += "<tr><th>pk</th><th>Name</th><th>Description</th><th>Song</th></tr>";
-                for (var j = 0; j < playlists[i]["songs"].length; j++){
-                    htmlPlaylist += "<tr>";
-                    htmlPlaylist += "<td>" + playlists[i]["songs"][j]['pk'] + "</td>";
-                    htmlPlaylist += "<td>" + playlists[i]["songs"][j]['name'] + "</td>";
-                    htmlPlaylist += "<td>" + playlists[i]["songs"][j]['description'] + "</td>";
-                    //htmlPlaylist += "<td>" + playlists[i]["songs"][j]['song_file'] + "</td>";
-                    htmlPlaylist += "<td><audio controls='controls' preload='none' src='" + playlists[i]["songs"][j]['song_file'] + "' > Your Browser Doesn't support audio tags</audio></td>";
-                    htmlPlaylist += "</tr>";
+                if (playlists[i]["songs"].length > 0){
+                    for (var j = 0; j < playlists[i]["songs"].length; j++){
+                        htmlPlaylist += "<tr>";
+                        htmlPlaylist += "<td>" + playlists[i]["songs"][j]['pk'] + "</td>";
+                        htmlPlaylist += "<td>" + playlists[i]["songs"][j]['name'] + "</td>";
+                        htmlPlaylist += "<td>" + playlists[i]["songs"][j]['description'] + "</td>";
+                        //htmlPlaylist += "<td>" + playlists[i]["songs"][j]['song_file'] + "</td>";
+                        htmlPlaylist += "<td><audio controls='controls' preload='none' src='" + playlists[i]["songs"][j]['song_file'] + "' > Your Browser Doesn't support audio tags</audio></td>";
+                        htmlPlaylist += "<td>" + playlists[i]['songs'][j]['star_ranking'] + "</td>";
+                        htmlPlaylist += "</tr>";
+                    }
                 }
             }
             $('#playlistContainer').show();
