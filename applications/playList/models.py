@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+
+from applications.ranking.models import Stars
 from utils.utils import Master
 from django.utils.translation import ugettext_lazy as _
 
@@ -34,6 +36,9 @@ def song_name(instance, filename):
 class Song(Master):
     name = models.CharField(max_length=50, blank=False, null=False, verbose_name=_("name"))
     song_file = models.FileField(blank=True, upload_to=song_name, verbose_name=_("song_file"))
+    stars = models.ManyToManyField(Stars, blank=True, related_name="%(app_label)s_%(class)s_stars",
+                                   verbose_name=_("stars"))
+    star_ranking = models.FloatField(default=0, verbose_name=_("star_ranking"))
 
     def __unicode__(self):
         return str(self.pk) + " - " + self.name
@@ -41,3 +46,38 @@ class Song(Master):
     class Meta:
         verbose_name = _("song")
         verbose_name_plural = _("songs")
+
+    def save(self, *args, **kwargs):
+        try:
+            if self.stars.all().count() > 0:
+                self.star_ranking = self.stars_rank_number
+        except:
+            self.star_ranking = 1
+        super(Song, self).save(*args, **kwargs)
+
+    @property
+    def stars_rank_number(self):
+        """
+        formula for ranking
+        sumatoria de (multiplicacion de la estrella por el numero de votos por esa estrella) sobre el total de votos
+        """
+        stars = self.stars.all()
+        star_1 = float(stars.filter(grade=1).count() * 1)
+        star_2 = float(stars.filter(grade=2).count() * 2)
+        star_3 = float(stars.filter(grade=3).count() * 3)
+        star_4 = float(stars.filter(grade=4).count() * 4)
+        star_5 = float(stars.filter(grade=5).count() * 5)
+        try:
+            ranking = float(star_1 + star_2 + star_3 + star_4 + star_5) / float(stars.count())
+        except:
+            ranking = 0
+        return ranking
+
+    @property
+    def stars_rank(self):
+        resp = []
+        for i in range(int(self.star_ranking)):
+            resp += [1]
+        for i in range(5 - len(resp)):
+            resp += [0]
+        return resp

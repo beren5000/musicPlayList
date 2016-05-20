@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'applications.playList',
+    'applications.ranking',
     'rest_framework',
     'django.contrib.sites',
     'allauth',
