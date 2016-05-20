@@ -198,6 +198,9 @@
                 htmlPlaylist += "<tr>";
                 htmlPlaylist += "<td colspan=4 style='text-align:center;font-weight:bold;'>Playlist Name: " + playlists[i]['name'] + "<td>";
                 htmlPlaylist += "</tr>";
+                htmlPlaylist += "<tr>";
+                htmlPlaylist += "<td colspan=4 style='text-align:center;font-weight:bold;'>Playlist Name: " + playlists[i]['description'] + "<td>";
+                htmlPlaylist += "</tr>";
                 htmlPlaylist += "<tr><th>pk</th><th>Name</th><th>Description</th><th>Song</th></tr>";
                 for (var j = 0; j < playlists[i]["songs"].length; j++){
                     htmlPlaylist += "<tr>";
