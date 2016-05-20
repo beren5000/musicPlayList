@@ -220,6 +220,7 @@
             getSongs();
             {% if user.is_authenticated %}
             getFormCreatePlaylist();
+            getPlayLists();
             {% endif %}
             $('#logInSubmit').on('click', function(event){
                 event.preventDefault();
