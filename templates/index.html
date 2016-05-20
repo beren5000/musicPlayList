@@ -20,27 +20,23 @@
                 </tr>
             </tbody>
         </table>
-        {% if user.is_authenticated %}
+
+        <br>
+        <div id="playlistContainer" style="display: none;">
             <h2 class="form-signin-heading">My Playlists</h2>
             <table id="songs" class="table table-condensed">
-                <thead>
-                    <tr>
-                        <th>pk</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Song</th>
-                    </tr>
-                </thead>
-                <tbody id="songsContent">
-                    <tr>
-                        <td>No Playlist Created</td>
-                    </tr>
+
+                <tbody id="playlistContent">
+                <tr>
+                    <td>No Playlist Created</td>
+                </tr>
                 </tbody>
             </table>
+        </div>
+        {% if user.is_authenticated %}
             <div id="formsContainer">
 
             </div>
-
         {% else %}
             <div id="formsContainer">
                 <form id="formSignIn" class="form-signin">
@@ -111,6 +107,7 @@
                 url: "API/v1/playlist/playlists/",
                 success: function(data) {
                     console.log(data);
+                    renderPlaylists(data);
                 },
                 error: function(data){
                     console.log(data);
@@ -119,7 +116,7 @@
         };
 
         var putPlayLists = function(){
-            var selectedSongs = $('input:checkbox:checked.group1').map(function () {
+            var selectedSongs = $('input:checkbox:checked').map(function () {
                 return parseInt(this.value);
             }).get();
             $.ajax({
@@ -135,6 +132,7 @@
                 url: "API/v1/playlist/playlists/",
                 success: function(data) {
                     console.log(data);
+                    getPlayLists();
                 },
                 error: function(data){
                     console.log(data);
@@ -152,6 +150,7 @@
                     renderSongs(data) ;
                     if ($('#createPlaylist').length > 0){
                         renderFormSongs(data);
+
                     }
                 },
                 error: function(data){
@@ -166,10 +165,12 @@
                 var htmlSongs = "";
                 for (var i = 0; i < songs.length; i++) {
                     htmlSongs += "<tr>";
+                    htmlSongs += "<td>" + songs[i]['pk'] + "</td>";
                     htmlSongs += "<td>" + songs[i]['name'] + "</td>";
                     htmlSongs += "<td>" + songs[i]['description'] + "</td>";
-                    htmlSongs += "<td><a href='" + songs[i]['song_file'] + "'></td>";
-                    htmlSongs += "</td>";
+                    htmlSongs += "<td>" + songs[i]['song_file'] + "</td>";
+                    //htmlSongs += "<td><audio><source src='" + songs[i]['song_file'] + "' type='audio/mpeg'></audio></td>";
+                    htmlSongs += "</tr>";
                 }
                 $('#songsContent').html(htmlSongs);
             }
@@ -183,15 +184,33 @@
                     htmlSongs += "<td><input type='checkbox' name='songs' value='" + songs[i]['pk'] + "'></td>";
                     htmlSongs += "<td>" + songs[i]['name'] + "</td>";
                     htmlSongs += "<td>" + songs[i]['description'] + "</td>";
-                    htmlSongs += "<td><a href='" + songs[i]['song_file'] + "' ></td>";
-                    htmlSongs += "</td>";
+                    htmlSongs += "<td>" + songs[i]['song_file'] + "</td>";
+                    //htmlSongs += "<td><audio><source src='" + songs[i]['song_file'] + "' type='audio/mpeg'></audio></td>";
+                    htmlSongs += "</tr>";
                 }
                 $('#songsContentSelect').html(htmlSongs);
             }
         };
 
         var renderPlaylists = function (playlists) {
-            
+            var htmlPlaylist = "";
+            for(var i=0; i < playlists.length; i++){
+                htmlPlaylist += "<tr>";
+                htmlPlaylist += "<td colspan=4 style='text-align:center;font-weight:bold;'>Playlist Name: " + playlists[i]['name'] + "<td>";
+                htmlPlaylist += "</tr>";
+                htmlPlaylist += "<tr><th>pk</th><th>Name</th><th>Description</th><th>Song</th></tr>";
+                for (var j = 0; j < playlists[i]["songs"].length; j++){
+                    htmlPlaylist += "<tr>";
+                    htmlPlaylist += "<td>" + playlists[i]["songs"][j]['pk'] + "</td>";
+                    htmlPlaylist += "<td>" + playlists[i]["songs"][j]['name'] + "</td>";
+                    htmlPlaylist += "<td>" + playlists[i]["songs"][j]['description'] + "</td>";
+                    htmlPlaylist += "<td>" + playlists[i]["songs"][j]['song_file'] + "</td>";
+                    //htmlPlaylist += "<td><audio><source src='" + playlists[i]["songs"][j]['song_file'] + "' type='audio/mpeg'></audio></td>";
+                    htmlPlaylist += "</tr>";
+                }
+            }
+            $('#playlistContainer').show();
+            $('#playlistContent').html(htmlPlaylist);
         };
 
         $(document).ready(function () {
