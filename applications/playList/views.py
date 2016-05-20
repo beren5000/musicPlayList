@@ -11,6 +11,12 @@ from applications.playList.models import Song, PlayLists
 from applications.playList.serializers import SongSerializer, PlaylistSerializer
 from rest_framework_jwt.utils import jwt_decode_handler
 
+from rest_framework.authentication import SessionAuthentication
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
 
 class SongsApiView(APIView):
     """
@@ -23,7 +29,7 @@ class SongsApiView(APIView):
         return Response(serializer.data)
 
 
-@authentication_classes([JSONWebTokenAuthentication,  SessionAuthentication])
+@authentication_classes([JSONWebTokenAuthentication,  CsrfExemptSessionAuthentication])
 class PlaylistApiView(APIView):
     """
     List all Songs, or create a new Song.
